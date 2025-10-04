@@ -1,2 +1,2 @@
 # eclipse
-Got tired of all these damn dependencies, so im making a termnial game with c of course.
+linux only, probably never porting to windows its a pain.
