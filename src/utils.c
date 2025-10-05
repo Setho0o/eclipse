@@ -1,3 +1,5 @@
+#include "../include/utils.h"
+#include "../include/game.h"
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,18 +7,19 @@
 #include <termios.h>
 #include <unistd.h>
 
-static bool debug  = true;
 static struct termios old_term, raw;
 
-void clear_screen() { 
+void debug(Draw ops, Player p) {
+  printf("\e[%d;%df\r", ops.term_y, 0);
+  printf("%d, %d %c", p.x, p.y, ops.key);
+}
+
+void clear_screen() {
   fflush(stdout);
   printf("\033[2J");
 }
 
 void reset_terminal() {
-  if (!debug) {
-    system("clear");
-  }
   printf("\e[m");    // reset color
   printf("\e[?25h"); // show cursor
   fflush(stdout);
@@ -34,9 +37,7 @@ void raw_config() {
   raw.c_cc[VTIME] = 1;
   tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 
-  if (!debug) {
-    printf("\e[?25l");
-  }
+  printf("\e[?25l"); // hide cursor
 }
 
 int get_term_size(int *rows, int *cols) {
@@ -50,8 +51,8 @@ int get_term_size(int *rows, int *cols) {
   }
 }
 
-void error(char* str, int val) {
+void error(char *str, int val) {
   reset_terminal();
-  printf("\n%s %d\n",str,val);
+  printf("\n%s %d\n", str, val);
   exit(0);
 }
